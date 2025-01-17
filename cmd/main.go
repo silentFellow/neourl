@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"log"
+
+	"github.com/silentFellow/neourl/config"
+)
 
 func main() {
-  fmt.Println("Just chilling") 
+  // logging set up
+  logFile := config.SetupLogging()
+  defer logFile.Close()
+
+  log.Println("Just Chilling")
 }
