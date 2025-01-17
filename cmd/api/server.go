@@ -21,9 +21,9 @@ func (s *server) Run() error {
 	port := fmt.Sprintf(":%v", s.addr)
 
 	router := http.NewServeMux()
-  router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    http.Redirect(w, r, "/api/v1/", http.StatusMovedPermanently)
-  })
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/api/v1/", http.StatusMovedPermanently)
+	})
 
 	subRouter := http.NewServeMux()
 	router.Handle("/api/v1/", http.StripPrefix("/api/v1", subRouter))
@@ -33,11 +33,14 @@ func (s *server) Run() error {
 		tmpl.Execute(w, nil)
 	})
 
-	middlewareStack := logginMiddleware(router)
+	middlewareStack := createMiddlewareStack(
+		loggingMiddleware,
+		corsMiddleware,
+	)
 
 	s.server = &http.Server{
 		Addr:    port,
-		Handler: middlewareStack,
+		Handler: middlewareStack(router),
 	}
 
 	return s.server.ListenAndServe()
