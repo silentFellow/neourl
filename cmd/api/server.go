@@ -33,6 +33,7 @@ func (s *server) Run() error {
 	router.HandleFunc("/", HandleIndex)
 	router.HandleFunc("/shorten-url", HandleUrlShorten(s.urlStorage))
 	router.HandleFunc("/r/{encoded}", HandleUrlRedirection(s.urlStorage))
+	router.HandleFunc("/not-found", HandleNotFound)
 
 	middlewareStack := createMiddlewareStack(
 		loggingMiddleware,

@@ -13,6 +13,11 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
+func HandleNotFound(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("templates/not-found.html"))
+	tmpl.Execute(w, nil)
+}
+
 func HandleUrlShorten(storage *urlcoder.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
@@ -40,7 +45,7 @@ func HandleUrlRedirection(storage *urlcoder.Storage) http.HandlerFunc {
 
 		decoded, err := storage.DecodeURL(encoded)
 		if err != nil {
-			http.Error(w, "URL not found", http.StatusNotFound)
+			http.Redirect(w, r, "/not-found", http.StatusFound)
 			return
 		}
 
