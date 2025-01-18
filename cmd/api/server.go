@@ -33,6 +33,21 @@ func (s *server) Run() error {
 		tmpl.Execute(w, nil)
 	})
 
+	subRouter.HandleFunc("/shorten-url", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			originalURL := r.FormValue("url")
+			// Implement your URL shortening logic here
+			shortenedURL := "http://short.url/" + originalURL
+			response := fmt.Sprintf(
+				"Shortened URL: <a href='%s' data-clipboard='%s'>%s</a>",
+				shortenedURL,
+				shortenedURL,
+				shortenedURL,
+			)
+			w.Write([]byte(response))
+		}
+	})
+
 	middlewareStack := createMiddlewareStack(
 		loggingMiddleware,
 		corsMiddleware,
