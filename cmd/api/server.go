@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 	"strings"
 
@@ -31,41 +30,9 @@ func (s *server) Run() error {
 	fs := http.FileServer(http.Dir("./static"))
 	router.Handle("/static/", http.StripPrefix("/static", fs))
 
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl := template.Must(template.ParseFiles("templates/index.html"))
-		tmpl.Execute(w, nil)
-	})
-
-	router.HandleFunc("/shorten-url", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodPost {
-			originalURL := r.FormValue("url")
-			shortenedURL := fmt.Sprintf(
-				"%v/r/%v",
-				getCurrentURL(r),
-				s.urlStorage.EncodeURL(originalURL),
-			)
-
-			response := fmt.Sprintf(
-				"<a href='%s' target='_blank' data-clipboard='%s'>%s</a>",
-				shortenedURL,
-				shortenedURL,
-				shortenedURL,
-			)
-			w.Write([]byte(response))
-		}
-	})
-
-	router.HandleFunc("/r/{encoded}", func(w http.ResponseWriter, r *http.Request) {
-		encoded := r.PathValue("encoded")
-
-		decoded, err := s.urlStorage.DecodeURL(encoded)
-		if err != nil {
-			http.Error(w, "URL not found", http.StatusNotFound)
-			return
-		}
-
-		http.Redirect(w, r, decoded, http.StatusTemporaryRedirect)
-	})
+	router.HandleFunc("/", HandleIndex)
+	router.HandleFunc("/shorten-url", HandleUrlShorten(s.urlStorage))
+	router.HandleFunc("/r/{encoded}", HandleUrlRedirection(s.urlStorage))
 
 	middlewareStack := createMiddlewareStack(
 		loggingMiddleware,
