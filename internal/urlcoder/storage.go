@@ -6,9 +6,9 @@ type Storage struct {
 	lookup        map[string]string
 	reverseLookup map[string]string
 
-	mapLength     int
-	charLength    int
-	maxCharLength int
+	charLength   int
+	mapLength    int
+	maxMapLength int
 
 	lock sync.RWMutex
 }
@@ -18,13 +18,18 @@ func NewURLStorage() *Storage {
 		lookup:        make(map[string]string),
 		reverseLookup: make(map[string]string),
 
-		charLength:    1,
-		maxCharLength: 31,
+		charLength:   1,
+		mapLength:    0,
+		maxMapLength: 31,
 
 		lock: sync.RWMutex{},
 	}
 }
 
 func (s *Storage) findNextMaxCharLength() int {
-	return (s.maxCharLength * 62) / 2
+	newMaxMapLength := 1
+	for range s.charLength + 1 {
+		newMaxMapLength *= 62
+	}
+	return newMaxMapLength / 2
 }

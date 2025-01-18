@@ -17,9 +17,9 @@ func (s *Storage) EncodeURL(url string) string {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
-	if s.mapLength+1 > s.maxCharLength {
+	if s.mapLength+1 > s.maxMapLength {
 		s.charLength += 1
-		s.maxCharLength = s.findNextMaxCharLength()
+		s.maxMapLength = s.findNextMaxCharLength()
 	}
 
 	encoded := generateRandom(s.charLength)
