@@ -69,12 +69,16 @@
       document.addEventListener("input", (event) => {
         const submitButton = document.getElementById("submit-button");
         submitButton.disabled = event.target.value.trim() === "";
+
+        // Clear the result when re-entering something
+        const resultLink = document.getElementById("result-link");
+        const copyButton = document.getElementById("copy-button");
+        resultLink.textContent = "";
+        copyButton.classList.add("hidden");
       });
 
       const copyLink = () => {
-        const resultLink = document
-          .getElementById("result-link")
-          .querySelector("[data-clipboard]");
+        const resultLink = document.getElementById("result-link");
         const copyButton = document.getElementById("copy-button");
         navigator.clipboard.writeText(resultLink.textContent).then(() => {
           copyButton.style.backgroundColor = "green";
