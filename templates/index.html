@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.6.1"></script>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
     <title>NeoURL</title>
   </head>
   <body
@@ -15,7 +16,7 @@
 
       <section class="w-[90%] sm:w-[60%] md:w-1/2 lg:w-[36%] flex gap-4">
         <form
-          hx-post="/api/v1/shorten-url"
+          hx-post="/shorten-url"
           hx-target="#result-link"
           hx-swap="innerHTML"
           class="w-full flex"
@@ -71,7 +72,9 @@
       });
 
       const copyLink = () => {
-        const resultLink = document.getElementById("result-link").querySelector('[data-clipboard]');
+        const resultLink = document
+          .getElementById("result-link")
+          .querySelector("[data-clipboard]");
         const copyButton = document.getElementById("copy-button");
         navigator.clipboard.writeText(resultLink.textContent).then(() => {
           copyButton.style.backgroundColor = "green";
