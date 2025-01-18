@@ -51,7 +51,9 @@ func (s *server) Run() error {
 func getCurrentURL(r *http.Request) string {
 	var currentURL strings.Builder
 
-	if r.TLS != nil {
+	// Check the X-Forwarded-Proto header
+	proto := r.Header.Get("X-Forwarded-Proto")
+	if r.TLS != nil || proto == "https" {
 		currentURL.WriteString("https://")
 	} else {
 		currentURL.WriteString("http://")
