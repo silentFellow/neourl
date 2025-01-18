@@ -6,6 +6,7 @@ import (
 
 	"github.com/silentFellow/neourl/cmd/api"
 	"github.com/silentFellow/neourl/config"
+	"github.com/silentFellow/neourl/internal/urlcoder"
 )
 
 func main() {
@@ -13,9 +14,12 @@ func main() {
   logFile := config.SetupLogging()
   defer logFile.Close()
 
+  // map storage set up
+  urlStorage := urlcoder.NewURLStorage()
+
   // setting server up
   PORT := config.Envs.Server_Port
-  server := api.NewServer(PORT)
+  server := api.NewServer(PORT, urlStorage)
 
   // GracefulShutdown
   done := make(chan struct{})
