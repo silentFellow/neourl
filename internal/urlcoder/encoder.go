@@ -6,6 +6,8 @@ import (
 )
 
 func (s *Storage) EncodeURL(url string) string {
+	url = formatURL(url)
+
 	s.lock.RLock()
 	val, ok := s.reverseLookup[url]
 	s.lock.RUnlock()
@@ -31,7 +33,7 @@ func (s *Storage) EncodeURL(url string) string {
 	}
 	s.lookup[encoded] = url
 	s.reverseLookup[url] = encoded
-  s.mapLength += 1
+	s.mapLength += 1
 
 	return encoded
 }
@@ -53,4 +55,15 @@ func generateRandom(length int) string {
 	}
 
 	return encoded.String()
+}
+
+func formatURL(url string) string {
+	neoURL := strings.ReplaceAll(url, " ", "")
+	neoURL = strings.TrimSuffix(neoURL, "/")
+
+	if !strings.HasPrefix(neoURL, "http") && !strings.HasPrefix(neoURL, "https") {
+		neoURL = "http://" + neoURL
+	}
+
+	return neoURL
 }
