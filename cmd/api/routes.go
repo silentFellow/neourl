@@ -9,6 +9,10 @@ import (
 )
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.Redirect(w, r, "/not-found", http.StatusFound)
+	}
+
 	tmpl := template.Must(template.ParseFiles("templates/index.html"))
 	tmpl.Execute(w, nil)
 }
